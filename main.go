@@ -14,24 +14,30 @@ type Message struct {
 	Content string `json:"message"`
 }
 
+type Response struct {
+	Digest string `json:"digest"`
+}
+
 func main() {
 	h := mux.NewRouter()
-
+	//var m map[string]string
 	h.HandleFunc("/messages", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodPost:
-			log.Print(PostHash(w, r))
-			break
+		//switch r.Method {
+		if r.Method == http.MethodPost {
+			//log.Print(PostHash(w, r))
+			response := Response{Digest: PostHash(w, r)}
+			json.NewEncoder(w).Encode(response)
+			//break
 		}
 	})
 	h.HandleFunc("/messages/{hash}", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
+		//switch r.Method {
+		if r.Method == http.MethodGet {
 			log.Print(GetHash(w, r))
-			break			
+			//break			
 		}
 	})
-	log.Fatal(http.ListenAndServe(":5000", h))
+	log.Fatal(http.ListenAndServeTLS(":5000", "localhost.crt", "localhost.key", h))
 }
 
 func GetHash(w http.ResponseWriter, r *http.Request) string{
