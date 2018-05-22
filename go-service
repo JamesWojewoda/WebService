@@ -1,0 +1,9 @@
+/var/log/go-service/*.log {
+    daily
+    missingok
+    rotate 5
+    compress
+    notifempty
+    sharedscripts
+    endscript
+}
